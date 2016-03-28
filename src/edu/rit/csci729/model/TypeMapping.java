@@ -23,4 +23,12 @@ public class TypeMapping {
 		return TypeMapping.mapping;
 	}
 	
+	public void addMapping(String type, Map<String,String> structure){
+		this.typeMap.put(type, structure);
+	}
+	
+	public Map<String,String> getMapping(String type){
+		return this.typeMap.get(type);
+	}
+	
 }
