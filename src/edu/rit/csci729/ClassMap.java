@@ -7,7 +7,7 @@ import java.util.Map;
 public class ClassMap {
 
 	private Map<Class<?>, ClassData> classData;
-	private ClassMap classMap = null;
+	private static ClassMap classMap = null;
 
 	private ClassMap() {
 		classData = new HashMap<Class<?>, ClassData>();
@@ -20,7 +20,7 @@ public class ClassMap {
 	 * 
 	 * @return ClassMap
 	 */
-	public ClassMap get() {
+	public static ClassMap get() {
 		if (classMap == null) {
 			synchronized (ClassMap.class) {
 				if (classMap == null) {
@@ -35,14 +35,22 @@ public class ClassMap {
 		for(String clazz : clazzes){
 			try {
 				Class<?> c = Class.forName(clazz);
-				if(!classData.containsKey(c)){
-					ClassData cd = new ClassData(c);
-					classData.put(c, cd);
-				}
+				scanClass(c);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void scanClass(Class<?> c){
+		if(!classData.containsKey(c)){
+			ClassData cd = new ClassData(c);
+			classData.put(c, cd);
+		}
+	}
+	
+	public ClassData getClassData(Class<?> c){
+		return classData.get(c);
 	}
 
 }
