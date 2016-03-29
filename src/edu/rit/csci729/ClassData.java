@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import edu.rit.csci729.annotations.WebServiceField;
 import edu.rit.csci729.annotations.WebServiceMethod;
 
 public class ClassData {
@@ -29,7 +30,8 @@ public class ClassData {
 		}
 		Field[] fields = clazz.getDeclaredFields();
 		for(Field f : fields){
-			this.fields.add(f);
+			if(f.getAnnotation(WebServiceField.class) != null)
+				this.fields.add(f);
 		}
 	}
 	
