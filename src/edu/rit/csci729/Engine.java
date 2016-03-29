@@ -16,10 +16,11 @@ import edu.smu.tspell.wordnet.WordNetDatabase;
 
 public class Engine {
 
-
-	private static Collection<String> primatives = new ArrayList<String>(){{
-		add("xs:string");		
-	}};
+	private static Collection<String> primatives = new ArrayList<String>() {
+		{
+			add("xs:string");
+		}
+	};
 
 	public static List<Tuple<String, String>> generateMapping(Class<?> c, Operation oper) throws NoMappingFound {
 		ClassMap cMap = ClassMap.get();
@@ -54,7 +55,7 @@ public class Engine {
 				new Comparator<Tuple<String, Double>>() {
 					@Override
 					public int compare(Tuple<String, Double> o1, Tuple<String, Double> o2) {
-						return (int) ((o2.v2 * 10000) - (o1.v2 * 10000));
+						return (int) ((o1.v2 * 10000) - (o2.v2 * 10000));
 					}
 				});
 
@@ -101,17 +102,36 @@ public class Engine {
 	private static Double compareStrings(String s1, String s2) {
 		// needs improvement
 		if (s1.toLowerCase().equals(s2.toLowerCase()))
-			return 1d;
-		return 0d;
+			return 0d;
+		return (double)LevenshteinDistance(s1, s1.length(), s2, s2.length());
 	}
 
 	private static void addForms(String[] forms, PriorityQueue<Tuple<String, Double>> proQue, String classInfo) {
+		System.out.println(classInfo);
 		for (String word : forms) {
+			System.out.println("\t"+word);
 			Tuple<String, Double> tup = new Tuple<String, Double>();
 			tup.v1 = classInfo;
 			tup.v2 = compareStrings(classInfo, word);
 			proQue.add(tup);
 		}
+	}
+
+	private static int LevenshteinDistance(String s1, int lenS1, String s2, int lenS2) {
+		int cost = 0;
+		if (lenS1 == 0)
+			return lenS2;
+		if (lenS2 == 0)
+			return lenS1;
+
+		if (s1.charAt(lenS1 - 1) == s2.charAt(lenS2 - 1))
+			cost = 0;
+		else
+			cost = 1;
+
+		return Math.min(LevenshteinDistance(s1, lenS1 - 1, s2, lenS2) + 1,
+				Math.min(LevenshteinDistance(s1, lenS1, s2, lenS2 - 1) + 1,
+						LevenshteinDistance(s1, lenS1 - 1, s2, lenS2 - 1) + cost));
 	}
 
 }
