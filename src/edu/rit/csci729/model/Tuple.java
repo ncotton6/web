@@ -1,8 +1,8 @@
 package edu.rit.csci729.model;
 
-public class Tuple {
+public class Tuple<H,T> {
 
-	String v1;
-	String v2;
+	public H v1;
+	public T v2;
 	
 }

@@ -34,5 +34,21 @@ public class ClassData {
 				this.fields.add(f);
 		}
 	}
+
+	public String[] getInfo() {
+		ArrayList<String> terms = new ArrayList<String>();
+		for(Field f : fields){
+			WebServiceField wsf = f.getAnnotation(WebServiceField.class);
+			for(String name :wsf.names()){
+				terms.add(name);
+			}
+			terms.add(f.getName());
+		}
+		//for(Method m : methods){
+			//WebServiceMethod wsm = m.getAnnotation(WebServiceMethod.class);
+			
+		//}
+		return terms.toArray(new String[terms.size()]);
+	}
 	
 }
