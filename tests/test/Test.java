@@ -17,11 +17,11 @@ public class Test {
 
 		ClassData cd = ClassMap.get().scanClass(TestClass.class);
 		Map<String, String> input = new HashMap<String, String>();
-		input.put("city", "string");
-		input.put("postalcode", "string");
+		input.put("fname", "string");
+		input.put("lname", "string");
 		Map<String, String> output = new HashMap<String, String>();
 		Operation oper = new Operation(input, output);
-		List<FieldConnection> out = Engine.generateMapping(TestClass.class, oper,0.5d,false);
+		List<FieldConnection> out = Engine.generateMapping(TestClass.class, oper,0.25d,true);
 		printFieldConnection(out);
 		System.out.println("Done");
 	}
