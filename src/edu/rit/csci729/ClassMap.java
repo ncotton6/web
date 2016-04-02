@@ -42,11 +42,12 @@ public class ClassMap {
 		}
 	}
 	
-	public void scanClass(Class<?> c){
+	public ClassData scanClass(Class<?> c){
 		if(!classData.containsKey(c)){
 			ClassData cd = new ClassData(c);
 			classData.put(c, cd);
 		}
+		return classData.get(c);
 	}
 	
 	public ClassData getClassData(Class<?> c){

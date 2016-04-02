@@ -15,7 +15,6 @@ import edu.rit.csci729.model.Tuple;
 import edu.rit.csci729.util.Distance;
 import edu.smu.tspell.wordnet.NounSynset;
 import edu.smu.tspell.wordnet.Synset;
-import edu.smu.tspell.wordnet.SynsetType;
 import edu.smu.tspell.wordnet.WordNetDatabase;
 
 public class Engine {
@@ -80,10 +79,10 @@ public class Engine {
 				});
 
 		// test exact match
-		for (String classInfo : cd.getInfo()) {
+		for (Tuple<Object,String[]> classInfo : cd.getInfo()) {
 			Tuple<String, Double> tup = new Tuple<String, Double>();
-			tup.v1 = classInfo;
-			tup.v2 = NameMatch(key, classInfo);
+			//tup.v1 = classInfo;
+			//tup.v2 = NameMatch(key, classInfo);
 			proQue.add(tup);
 		}
 
@@ -95,7 +94,7 @@ public class Engine {
 				String[] forms = ns.getWordForms();
 				NounSynset[] hypernyms = ns.getHypernyms();
 				NounSynset[] hyponyms = ns.getHyponyms();
-				for (String classInfo : cd.getInfo()) {
+				/*for (String classInfo : cd.getInfo()) {
 					addForms(forms, proQue, classInfo);
 					for (NounSynset hyper : hypernyms) {
 						addForms(hyper.getWordForms(), proQue, classInfo);
@@ -103,7 +102,7 @@ public class Engine {
 					for (NounSynset hypo : hyponyms) {
 						addForms(hypo.getWordForms(), proQue, classInfo);
 					}
-				}
+				}*/
 			}
 		}
 		System.out.println("Matching :: " + proQue.peek().v1 + "  - " + proQue.peek().v2);
