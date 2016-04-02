@@ -40,8 +40,8 @@ public class Test {
 	public static void printFieldConnection(List<FieldConnection> conn) {
 		for (FieldConnection fc : conn) {
 			System.out.println(
-					fc.classConnection + " ==>( " + fc.classConnectionName + " ==> " + fc.webServiceConnectionName
-							+ " )==> " + fc.webServiceName + " (similarity " + fc.qualityOfConnection + ")");
+					fc.classConnection + " ==>(" + fc.classConnectionName + " ==> " + fc.webServiceConnectionName
+							+ ")==> " + fc.webServiceName + " (similarity " + fc.qualityOfConnection + ")");
 		}
 	}
 
