@@ -26,6 +26,18 @@ public class Engine {
 	private final static Collection<String> primatives = new ArrayList<String>() {
 		{
 			add("string");
+			add("boolean");
+			add("byte");
+			add("double");
+			add("float");
+			add("integer");
+			add("long");
+			add("short");
+			add("decimal");
+			add("int");
+			// add("anyURI");
+			// add("dateTime");
+			// add("QName");
 		}
 	};
 
@@ -46,28 +58,30 @@ public class Engine {
 		}
 	};
 
-	public static List<FieldConnection> generateMapping(Class<?> c, Operation oper, double threshold, boolean throwException) throws NoMappingFound {
+	public static List<FieldConnection> generateMapping(Class<?> c, Operation oper, double threshold,
+			boolean throwException) throws NoMappingFound {
 		ClassMap cMap = ClassMap.get();
 		cMap.scanClass(c);
 		ClassData cd = cMap.getClassData(c);
-		return generateMapping(cd, oper,threshold,throwException);
+		return generateMapping(cd, oper, threshold, throwException);
 	}
 
-	public static List<FieldConnection> generateMapping(ClassData cd, Operation oper, double threshold, boolean throwException) throws NoMappingFound {
+	public static List<FieldConnection> generateMapping(Map<Object, String> map, Operation oper, double threshold,
+			boolean throwException) throws NoMappingFound {
 		setDict();
 		ArrayList<FieldConnection> mappings = new ArrayList<FieldConnection>();
 		for (String key : oper.getInput().keySet()) {
 			String value = oper.getInput().get(key);
 			if (Engine.primatives.contains(value)) {
-				mappings.add(findIdealMapping(key, cd));
+				mappings.add(findIdealMapping(key, map));
 			}
 		}
-		if(throwException){
+		if (throwException) {
 			Set<Object> used = new HashSet<Object>();
-			for(FieldConnection fc : mappings){
-				if(used.contains(fc.classConnection))
+			for (FieldConnection fc : mappings) {
+				if (used.contains(fc.classConnection))
 					throw new NoMappingFound("Multiple mappings from the same data value");
-				if(fc.qualityOfConnection < threshold)
+				if (fc.qualityOfConnection < threshold)
 					throw new NoMappingFound("Best mapping didn't surpass set threshold");
 				used.add(fc.classConnection);
 			}
@@ -75,7 +89,19 @@ public class Engine {
 		return mappings;
 	}
 
-	private static FieldConnection findIdealMapping(String key, ClassData cd) {
+	public static List<FieldConnection> generateMapping(ClassData cd, Operation oper, double threshold,
+			boolean throwException) throws NoMappingFound {
+		Map<Object, String> fromClassData = new HashMap<Object, String>();
+		List<Tuple<Object, String[]>> data = cd.getInfo();
+		for (Tuple<Object, String[]> tup : data) {
+			for (String s : tup.v2) {
+				fromClassData.put(tup.v1, s);
+			}
+		}
+		return generateMapping(fromClassData, oper, threshold, throwException);
+	}
+
+	private static FieldConnection findIdealMapping(String key, Map<Object, String> map) {
 
 		WordNetDatabase database = WordNetDatabase.getFileInstance();
 		PriorityQueue<FieldConnection> proQue = new PriorityQueue<FieldConnection>(new Comparator<FieldConnection>() {
@@ -92,7 +118,7 @@ public class Engine {
 		findSense();
 
 		// test exact match
-		processForm(cd, key, key, proQue);
+		processForm(map, key, key, proQue);
 
 		// test with wordnet
 
@@ -102,20 +128,20 @@ public class Engine {
 				NounSynset ns = (NounSynset) s;
 				String[] forms = ns.getWordForms();
 				for (String f : forms) {
-					processForm(cd, f, key, proQue);
+					processForm(map, f, key, proQue);
 				}
 				NounSynset[] hypernyms = ns.getHypernyms();
-				for(NounSynset nss : hypernyms){
+				for (NounSynset nss : hypernyms) {
 					forms = nss.getWordForms();
-					for(String f : forms){
-						processForm(cd, f, key, proQue);
+					for (String f : forms) {
+						processForm(map, f, key, proQue);
 					}
 				}
 				NounSynset[] hyponyms = ns.getHyponyms();
-				for(NounSynset nss : hyponyms){
+				for (NounSynset nss : hyponyms) {
 					forms = nss.getWordForms();
-					for(String f : forms){
-						processForm(cd, f, key, proQue);
+					for (String f : forms) {
+						processForm(map, f, key, proQue);
 					}
 				}
 			}
@@ -124,19 +150,18 @@ public class Engine {
 		return proQue.peek();
 	}
 
-	private static void processForm(ClassData cd, String form, String key,
+	private static void processForm(Map<Object, String> map, String form, String key,
 			PriorityQueue<FieldConnection> proQue) {
-		for (Tuple<Object, String[]> classInfo : cd.getInfo()) {
-			for (String name : classInfo.v2) {
-				double value = Distance.NGramSim2(form.toLowerCase(), name.toLowerCase());
-				FieldConnection fc = new FieldConnection();
-				fc.classConnection = classInfo.v1;
-				fc.classConnectionName = name;
-				fc.qualityOfConnection = value;
-				fc.webServiceConnectionName = form;
-				fc.webServiceName = key;
-				proQue.add(fc);
-			}
+		for (Object mkey : map.keySet()) {
+			String name = map.get(mkey);
+			double value = Distance.NGramSim2(form.toLowerCase(), name.toLowerCase());
+			FieldConnection fc = new FieldConnection();
+			fc.classConnection = mkey;
+			fc.classConnectionName = name;
+			fc.qualityOfConnection = value;
+			fc.webServiceConnectionName = form;
+			fc.webServiceName = key;
+			proQue.add(fc);
 		}
 	}
 
