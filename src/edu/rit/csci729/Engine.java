@@ -20,9 +20,7 @@ import edu.smu.tspell.wordnet.WordNetDatabase;
 
 public class Engine {
 
-	private static Double w1=1d,w2=1d,w3=1d,w4=1d,w5=1d,w6=1d,w7=1d;
-	
-	
+	private static Double w1=1d,w2=1d,w3=1d,w4=1d,w5=1d,w6=1d,w7=1d;	
 	private final static Collection<String> primatives = new ArrayList<String>() {
 		{
 			add("string");
@@ -113,7 +111,6 @@ public class Engine {
 	}
 
 	private static void findContext() {
-		
 	}
 
 	private static void findSense() {
@@ -179,7 +176,4 @@ public class Engine {
 			proQue.add(tup);
 		}
 	}
-
-	
-
 }

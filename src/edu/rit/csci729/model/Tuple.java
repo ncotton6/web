@@ -43,5 +43,4 @@ public class Tuple<H, T> {
 			return false;
 		return true;
 	}
-
 }
