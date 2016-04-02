@@ -1,5 +1,6 @@
 package edu.rit.csci729;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -7,11 +8,13 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.PriorityQueue;
 import java.util.Set;
 
 import edu.rit.csci729.model.Concept;
 import edu.rit.csci729.model.FieldConnection;
+import edu.rit.csci729.model.MappingSource;
 import edu.rit.csci729.model.NoMappingFound;
 import edu.rit.csci729.model.Operation;
 import edu.rit.csci729.model.Tuple;
@@ -66,7 +69,7 @@ public class Engine {
 		return generateMapping(cd, oper, threshold, throwException);
 	}
 
-	public static List<FieldConnection> generateMapping(Map<Object, String> map, Operation oper, double threshold,
+	public static List<FieldConnection> generateMapping(Map<MappingSource, String> map, Operation oper, double threshold,
 			boolean throwException) throws NoMappingFound {
 		setDict();
 		ArrayList<FieldConnection> mappings = new ArrayList<FieldConnection>();
@@ -91,17 +94,25 @@ public class Engine {
 
 	public static List<FieldConnection> generateMapping(ClassData cd, Operation oper, double threshold,
 			boolean throwException) throws NoMappingFound {
-		Map<Object, String> fromClassData = new HashMap<Object, String>();
+		Map<MappingSource, String> fromClassData = new HashMap<MappingSource, String>();
 		List<Tuple<Object, String[]>> data = cd.getInfo();
 		for (Tuple<Object, String[]> tup : data) {
 			for (String s : tup.v2) {
-				fromClassData.put(tup.v1, s);
+				MappingSource ms = new MappingSource();
+				ms.source = tup.v1;
+				String type = "";
+				if(ms.source instanceof Field){
+					Field f = (Field)ms.source;
+					type = f.getType().getName().toLowerCase();
+				}
+				ms.type = type;
+				fromClassData.put(ms, s);
 			}
-		}
+		}		
 		return generateMapping(fromClassData, oper, threshold, throwException);
 	}
 
-	private static FieldConnection findIdealMapping(String key, Map<Object, String> map) {
+	private static FieldConnection findIdealMapping(String key, Map<MappingSource, String> map) {
 
 		WordNetDatabase database = WordNetDatabase.getFileInstance();
 		PriorityQueue<FieldConnection> proQue = new PriorityQueue<FieldConnection>(new Comparator<FieldConnection>() {
@@ -150,13 +161,13 @@ public class Engine {
 		return proQue.peek();
 	}
 
-	private static void processForm(Map<Object, String> map, String form, String key,
+	private static void processForm(Map<MappingSource, String> map, String form, String key,
 			PriorityQueue<FieldConnection> proQue) {
-		for (Object mkey : map.keySet()) {
+		for (MappingSource mkey : map.keySet()) {
 			String name = map.get(mkey);
 			double value = Distance.NGramSim2(form.toLowerCase(), name.toLowerCase());
 			FieldConnection fc = new FieldConnection();
-			fc.classConnection = mkey;
+			fc.classConnection = mkey.source;
 			fc.classConnectionName = name;
 			fc.qualityOfConnection = value;
 			fc.webServiceConnectionName = form;
