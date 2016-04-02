@@ -21,8 +21,10 @@ public class Test {
 		input.put("lname", "string");
 		Map<String, String> output = new HashMap<String, String>();
 		Operation oper = new Operation(input, output);
-		List<FieldConnection> out = Engine.generateMapping(TestClass.class, oper,0.25d,true);
-		printFieldConnection(out);
+		printFieldConnection(Engine.generateMapping(TestClass.class, oper,0.25d,true));
+		input.put("age", "string");
+		System.out.println("\n");
+		printFieldConnection(Engine.generateMapping(TestClass.class, oper,0.25d,true));
 		System.out.println("Done");
 	}
 
