@@ -8,7 +8,10 @@ public class TestClass {
 	private String firstName;
 	@WebServiceField
 	private String lastName;
+//	@WebServiceField
+//	private String name;
 	@WebServiceField
 	private int age;
+	
 	
 }
