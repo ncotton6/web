@@ -1,7 +1,5 @@
 package test;
 
-import edu.rit.csci729.util.Distance;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

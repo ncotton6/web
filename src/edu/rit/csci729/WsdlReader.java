@@ -97,7 +97,7 @@ public class WsdlReader {
 		Map<String, Map<String, String>> types = TypeMapping.get().getService(serviceName);
 		if(!types.containsKey(type)){
 			// add type
-			NodeList elements = d.getElementsByTagName("element");
+			NodeList elements = d.getElementsByTagName("complexType");
 			for(int i = 0; i < elements.getLength(); ++i){
 				Element e = (Element)elements.item(i);
 				if(type.equals(e.getAttribute("name"))){
