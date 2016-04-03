@@ -5,14 +5,14 @@ import java.util.Map;
 
 public class TypeMapping {
 
-	private Map<String,Map<String,String>> typeMap = null;
+	private Map<String,Map<String,Map<String,String>>> typeMap = null;
 	private static TypeMapping mapping = null;
 	
 	private TypeMapping(){
-		this.typeMap = new HashMap<String,Map<String,String>>();
+		this.typeMap = new HashMap<String,Map<String,Map<String,String>>>();
 	}
 	
-	private static TypeMapping get(){
+	public static TypeMapping get(){
 		if(mapping == null){
 			synchronized (TypeMapping.class) {
 				if(mapping == null){
@@ -23,12 +23,12 @@ public class TypeMapping {
 		return TypeMapping.mapping;
 	}
 	
-	public void addMapping(String type, Map<String,String> structure){
-		this.typeMap.put(type, structure);
+	public void addService(String service, Map<String,Map<String,String>> details){
+		typeMap.put(service, details);
 	}
 	
-	public Map<String,String> getMapping(String type){
-		return this.typeMap.get(type);
+	public Map<String,Map<String,String>> getService(String service){
+		return typeMap.get(service);
 	}
 	
 }

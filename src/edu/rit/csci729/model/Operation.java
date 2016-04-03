@@ -4,12 +4,22 @@ import java.util.Map;
 
 public class Operation {
 
-	private Map<String,String> input = null;
-	private Map<String,String> output = null;
-	
-	public Operation(Map<String,String> input, Map<String,String> output){
+	private String operationName;
+	private Map<String, String> input = null;
+	private Map<String, String> output = null;
+
+	public Operation() {
+	}
+
+	public Operation(Map<String, String> input, Map<String, String> output) {
 		this.input = input;
 		this.output = output;
+	}
+
+	public Operation(Map<String, String> input, Map<String, String> output, String operationName) {
+		this.input = input;
+		this.output = output;
+		this.operationName = operationName;
 	}
 
 	public Map<String, String> getInput() {
@@ -27,5 +37,13 @@ public class Operation {
 	public void setOutput(Map<String, String> output) {
 		this.output = output;
 	}
-	
+
+	public String getOperationName() {
+		return operationName;
+	}
+
+	public void setOperationName(String operationName) {
+		this.operationName = operationName;
+	}
+
 }
