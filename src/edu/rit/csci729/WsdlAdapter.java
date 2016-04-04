@@ -20,14 +20,10 @@ import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
 
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.ibm.wsdl.OperationImpl;
-import com.ibm.wsdl.PortImpl;
 import com.ibm.wsdl.PortTypeImpl;
-import com.ibm.wsdl.extensions.schema.SchemaImpl;
-
 import edu.rit.csci729.model.Operation;
 import edu.rit.csci729.model.TypeMapping;
 
@@ -81,6 +77,7 @@ public class WsdlAdapter {
 			List operations = port.getOperations();
 			for (Object oper : operations) {
 				Operation localOperation = new Operation();
+				localOperation.setServiceName(this.service);
 				OperationImpl operation = (OperationImpl) oper;
 				localOperation.setOperationName(operation.getName());
 				Input input = operation.getInput();

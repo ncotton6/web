@@ -5,6 +5,7 @@ import java.util.Map;
 public class Operation {
 
 	private String operationName;
+	private String serviceName;
 	private Map<String, String> input = null;
 	private Map<String, String> output = null;
 
@@ -44,6 +45,14 @@ public class Operation {
 
 	public void setOperationName(String operationName) {
 		this.operationName = operationName;
+	}
+
+	public String getServiceName() {
+		return serviceName;
+	}
+
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
 	}
 
 }
