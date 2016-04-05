@@ -1,6 +1,8 @@
 package edu.rit.csci729.model;
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class Operation {
 
@@ -53,6 +55,24 @@ public class Operation {
 
 	public void setServiceName(String serviceName) {
 		this.serviceName = serviceName;
+	}
+	
+	public Map<MappingSource,String> getInputMap(){
+		return generateMapping(input);
+	}
+	
+	public Map<MappingSource,String> getOutputMap(){
+		return generateMapping(output);
+	}
+	
+	private Map<MappingSource,String> generateMapping(Map<String,String> map){
+		Map<MappingSource,String> ret = new HashMap<MappingSource,String>();
+		for(Entry<String,String> entry : map.entrySet()){
+			MappingSource ms = new MappingSource();
+			ms.source = entry.getKey();
+			ms.type = entry.getValue();
+		}
+		return ret;
 	}
 
 }

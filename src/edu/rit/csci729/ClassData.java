@@ -5,12 +5,15 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import edu.rit.csci729.annotations.WebServiceField;
 import edu.rit.csci729.annotations.WebServiceMethod;
+import edu.rit.csci729.model.MappingSource;
 import edu.rit.csci729.model.Tuple;
 
 public class ClassData {
@@ -56,6 +59,25 @@ public class ClassData {
 			
 		//}
 		return terms;
+	}
+	
+	public Map<MappingSource,String> getMap(){
+		Map<MappingSource, String> fromClassData = new HashMap<MappingSource, String>();
+		List<Tuple<Object, String[]>> data = getInfo();
+		for (Tuple<Object, String[]> tup : data) {
+			for (String s : tup.v2) {
+				MappingSource ms = new MappingSource();
+				ms.source = tup.v1;
+				String type = "";
+				if(ms.source instanceof Field){
+					Field f = (Field)ms.source;
+					type = f.getType().getName().toLowerCase();
+				}
+				ms.type = type;
+				fromClassData.put(ms, s);
+			}
+		}
+		return fromClassData;
 	}
 	
 }

@@ -18,6 +18,7 @@ import edu.rit.csci729.model.MappingSource;
 import edu.rit.csci729.model.NoMappingFound;
 import edu.rit.csci729.model.Operation;
 import edu.rit.csci729.model.Tuple;
+import edu.rit.csci729.model.TypeMapping;
 import edu.rit.csci729.util.Distance;
 import edu.smu.tspell.wordnet.NounSynset;
 import edu.smu.tspell.wordnet.Synset;
@@ -26,24 +27,6 @@ import edu.smu.tspell.wordnet.WordNetDatabase;
 public class Engine {
 	private static String dictLocation = "C:\\WordNet\\2.1\\dict\\";
 	private static Double w1 = 1d, w2 = 1d, w3 = 1d, w4 = 1d, w5 = 1d, w6 = 1d, w7 = 1d;
-	private final static Collection<String> primatives = new ArrayList<String>() {
-		{
-			add("string");
-			add("boolean");
-			add("byte");
-			add("double");
-			add("float");
-			add("integer");
-			add("long");
-			add("short");
-			add("decimal");
-			add("int");
-			// add("anyURI");
-			// add("dateTime");
-			// add("QName");
-		}
-	};
-
 	private final static Map<Tuple<String, String>, Double> typeMapping = new HashMap<Tuple<String, String>, Double>() {
 		{
 			put(new Tuple<String, String>("decimal", "string"), 1d);
@@ -61,58 +44,61 @@ public class Engine {
 		}
 	};
 
-	public static List<FieldConnection> generateMapping(Class<?> c, Operation oper, double threshold,
-			boolean throwException) throws NoMappingFound {
-		ClassMap cMap = ClassMap.get();
-		cMap.scanClass(c);
-		ClassData cd = cMap.getClassData(c);
-		return generateMapping(cd, oper, threshold, throwException);
+	static {
+		String value = System.getProperty("wordnet.database.dir", "");
+		if (value.isEmpty()) {
+			System.setProperty("wordnet.database.dir", dictLocation);
+		}
 	}
 
-	public static List<FieldConnection> generateMapping(Map<MappingSource, String> map, Operation oper, double threshold,
-			boolean throwException) throws NoMappingFound {
-		setDict();
+	private String fromService, toService;
+
+	public Engine(String fromService, String toService) {
+		this.fromService = fromService;
+		this.toService = toService;
+	}
+
+	public List<FieldConnection> generateMapping(Class<?> from, Operation to, double threshold, boolean check)
+			throws NoMappingFound {
+		ClassMap cMap = ClassMap.get();
+		cMap.scanClass(from);
+		ClassData cd = cMap.getClassData(from);
+		return generateMapping(cd.getMap(), to.getInputMap(), threshold, check);
+	}
+	
+	public List<FieldConnection> generateMapping(ClassData from, Operation to, double threshold, boolean check)
+			throws NoMappingFound {
+		return generateMapping(from.getMap(), to.getInputMap(), threshold, check);
+	}
+
+
+	public List<FieldConnection> generateMapping(Operation from, Operation to, double threshold, boolean check) {
+		return generateMapping(from.getOutputMap(), to.getInputMap(), threshold, check);
+	}
+	
+	public List<FieldConnection> generateMapping(Map<MappingSource, String> from, Map<MappingSource, String> to,
+			double threshold, boolean check) {
 		ArrayList<FieldConnection> mappings = new ArrayList<FieldConnection>();
-		for (String key : oper.getInput().keySet()) {
-			String value = oper.getInput().get(key);
-			if (Engine.primatives.contains(value)) {
-				mappings.add(findIdealMapping(key, map));
+		for (String key : to.getInput().keySet()) {
+			String value = to.getInput().get(key);
+			if (!TypeMapping.get().getService(toService).containsKey(value)) {
+				mappings.add(findIdealMapping(key, from));
 			}
 		}
-		if (throwException) {
+		if (check) {
 			Set<Object> used = new HashSet<Object>();
 			for (FieldConnection fc : mappings) {
-				if (used.contains(fc.classConnection))
+				if (used.contains(fc.fromConnection))
 					throw new NoMappingFound("Multiple mappings from the same data value");
 				if (fc.qualityOfConnection < threshold)
 					throw new NoMappingFound("Best mapping didn't surpass set threshold");
-				used.add(fc.classConnection);
+				used.add(fc.fromConnection);
 			}
 		}
 		return mappings;
 	}
 
-	public static List<FieldConnection> generateMapping(ClassData cd, Operation oper, double threshold,
-			boolean throwException) throws NoMappingFound {
-		Map<MappingSource, String> fromClassData = new HashMap<MappingSource, String>();
-		List<Tuple<Object, String[]>> data = cd.getInfo();
-		for (Tuple<Object, String[]> tup : data) {
-			for (String s : tup.v2) {
-				MappingSource ms = new MappingSource();
-				ms.source = tup.v1;
-				String type = "";
-				if(ms.source instanceof Field){
-					Field f = (Field)ms.source;
-					type = f.getType().getName().toLowerCase();
-				}
-				ms.type = type;
-				fromClassData.put(ms, s);
-			}
-		}		
-		return generateMapping(fromClassData, oper, threshold, throwException);
-	}
-
-	private static FieldConnection findIdealMapping(String key, Map<MappingSource, String> map) {
+	private FieldConnection findIdealMapping(String key, Map<MappingSource, String> map) {
 
 		WordNetDatabase database = WordNetDatabase.getFileInstance();
 		PriorityQueue<FieldConnection> proQue = new PriorityQueue<FieldConnection>(new Comparator<FieldConnection>() {
@@ -161,61 +147,61 @@ public class Engine {
 		return proQue.peek();
 	}
 
-	private static void processForm(Map<MappingSource, String> map, String form, String key,
+	private void processForm(Map<MappingSource, String> map, String form, String key,
 			PriorityQueue<FieldConnection> proQue) {
 		for (MappingSource mkey : map.keySet()) {
 			String name = map.get(mkey);
 			double value = Distance.NGramSim2(form.toLowerCase(), name.toLowerCase());
 			FieldConnection fc = new FieldConnection();
-			fc.classConnection = mkey.source;
-			fc.classConnectionName = name;
+			fc.fromConnection = mkey.source;
+			fc.fromConnectionName = name;
 			fc.qualityOfConnection = value;
-			fc.webServiceConnectionName = form;
-			fc.webServiceName = key;
+			fc.toConnectionName = form;
+			fc.toConnection = key;
 			proQue.add(fc);
 		}
 	}
 
-	private static void findContext() {
+	private void findContext() {
 	}
 
-	private static void findSense() {
+	private void findSense() {
 	}
 
-	private static Double conceptSim(Concept c1, Concept c2) {
+	private Double conceptSim(Concept c1, Concept c2) {
 		return ((w1 * synSim(c1, c2)) + (w2 * propSim(c1, c2)) + (w3 * cvrgSim(c1, c2))) / (w1 + w2 + w3);
 	}
 
-	private static Double cvrgSim(Concept c1, Concept c2) {
+	private Double cvrgSim(Concept c1, Concept c2) {
 		return 1d;
 	}
 
-	private static Double synSim(Concept c1, Concept c2) {
+	private Double synSim(Concept c1, Concept c2) {
 		return (w4 * NameMatch(c1.name, c2.name) + w5 * DescrMatch(c1.name, c1.name)) / (w4 + w5);
 	}
 
-	private static Double propSim(Concept s1, Concept s2) {
+	private Double propSim(Concept s1, Concept s2) {
 		// go through all of the properties of s1 finding matches in s2.
 		return 1d;
 	}
 
-	private static Double propMatch() {
+	private Double propMatch() {
 		return 1d;
 	}
 
-	private static Double rangeSim() {
+	private Double rangeSim() {
 		return (w6 * synSim() + w7 * propSynSim()) / (w6 + w7);
 	}
 
-	private static Double synSim() {
+	private Double synSim() {
 		return 1d;
 	}
 
-	private static Double propSynSim() {
+	private Double propSynSim() {
 		return 1d;
 	}
 
-	private static Double cvrgSim(String s1, String s2) {
+	private Double cvrgSim(String s1, String s2) {
 		return 1d;
 	}
 
@@ -231,23 +217,5 @@ public class Engine {
 		if (s1.toLowerCase().equals(s2.toLowerCase()))
 			return 0d;
 		return 1d; // do to the lack of descriptions
-	}
-
-	// private static void addForms(String[] forms,
-	// PriorityQueue<Tuple<Tuple<Object,String>, Double>> proQue, String
-	// classInfo) {
-	// for (String word : forms) {
-	// Tuple<String, Double> tup = new Tuple<String, Double>();
-	// tup.v1 = classInfo;
-	// tup.v2 = NameMatch(classInfo, word);
-	// proQue.add(tup);
-	// }
-	// }
-
-	private static void setDict() {
-		String value = System.getProperty("wordnet.database.dir", "");
-		if (value.isEmpty()) {
-			System.setProperty("wordnet.database.dir", dictLocation);
-		}
 	}
 }
