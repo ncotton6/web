@@ -12,17 +12,17 @@ public class Test {
 	public static void main(String[] args) throws NoMappingFound {
 		// TODO Auto-generated method stub
 		System.out.println("Start");
-
 		ClassData cd = ClassMap.get().scanClass(TestClass.class);
 		Map<String, String> input = new HashMap<String, String>();
 		input.put("fname", "string");
 		input.put("lname", "string");
 		Map<String, String> output = new HashMap<String, String>();
 		Operation oper = new Operation(input, output);
-		printFieldConnection(Engine.generateMapping(TestClass.class, oper,0.25d,true));
+		Engine e = new Engine(null, null);
+		printFieldConnection(e.generateMapping(TestClass.class, oper,0.25d,true));
 		input.put("age", "string");
 		System.out.println("\n");
-		printFieldConnection(Engine.generateMapping(TestClass.class, oper,0.25d,true));
+		printFieldConnection(e.generateMapping(TestClass.class, oper,0.25d,true));
 		System.out.println("Done");
 	}
 

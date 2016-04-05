@@ -65,23 +65,24 @@ public class Engine {
 		ClassData cd = cMap.getClassData(from);
 		return generateMapping(cd.getMap(), to.getInputMap(), threshold, check);
 	}
-	
+
 	public List<FieldConnection> generateMapping(ClassData from, Operation to, double threshold, boolean check)
 			throws NoMappingFound {
 		return generateMapping(from.getMap(), to.getInputMap(), threshold, check);
 	}
 
-
-	public List<FieldConnection> generateMapping(Operation from, Operation to, double threshold, boolean check) {
+	public List<FieldConnection> generateMapping(Operation from, Operation to, double threshold, boolean check)
+			throws NoMappingFound {
 		return generateMapping(from.getOutputMap(), to.getInputMap(), threshold, check);
 	}
-	
+
 	public List<FieldConnection> generateMapping(Map<MappingSource, String> from, Map<MappingSource, String> to,
-			double threshold, boolean check) {
+			double threshold, boolean check) throws NoMappingFound {
 		ArrayList<FieldConnection> mappings = new ArrayList<FieldConnection>();
-		for (String key : to.getInput().keySet()) {
-			String value = to.getInput().get(key);
-			if (!TypeMapping.get().getService(toService).containsKey(value)) {
+		for (MappingSource key : to.keySet()) {
+			String type = to.get(key);
+			if (toService == null
+					|| (toService != null && !TypeMapping.get().getService(toService).containsKey(type))) {
 				mappings.add(findIdealMapping(key, from));
 			}
 		}
@@ -98,7 +99,7 @@ public class Engine {
 		return mappings;
 	}
 
-	private FieldConnection findIdealMapping(String key, Map<MappingSource, String> map) {
+	private FieldConnection findIdealMapping(MappingSource to, Map<MappingSource, String> from) {
 
 		WordNetDatabase database = WordNetDatabase.getFileInstance();
 		PriorityQueue<FieldConnection> proQue = new PriorityQueue<FieldConnection>(new Comparator<FieldConnection>() {
@@ -115,30 +116,30 @@ public class Engine {
 		findSense();
 
 		// test exact match
-		processForm(map, key, key, proQue);
+		processForm(from, (String) to.source, to, proQue);
 
 		// test with wordnet
 
-		Synset[] synonyms = database.getSynsets(key);
+		Synset[] synonyms = database.getSynsets((String) to.source);
 		for (Synset s : synonyms) {
 			if (s instanceof NounSynset) {
 				NounSynset ns = (NounSynset) s;
 				String[] forms = ns.getWordForms();
 				for (String f : forms) {
-					processForm(map, f, key, proQue);
+					processForm(from, f, to, proQue);
 				}
 				NounSynset[] hypernyms = ns.getHypernyms();
 				for (NounSynset nss : hypernyms) {
 					forms = nss.getWordForms();
 					for (String f : forms) {
-						processForm(map, f, key, proQue);
+						processForm(from, f, to, proQue);
 					}
 				}
 				NounSynset[] hyponyms = ns.getHyponyms();
 				for (NounSynset nss : hyponyms) {
 					forms = nss.getWordForms();
 					for (String f : forms) {
-						processForm(map, f, key, proQue);
+						processForm(from, f, to, proQue);
 					}
 				}
 			}
@@ -147,17 +148,17 @@ public class Engine {
 		return proQue.peek();
 	}
 
-	private void processForm(Map<MappingSource, String> map, String form, String key,
+	private void processForm(Map<MappingSource, String> from, String toWordForm, MappingSource to,
 			PriorityQueue<FieldConnection> proQue) {
-		for (MappingSource mkey : map.keySet()) {
-			String name = map.get(mkey);
-			double value = Distance.NGramSim2(form.toLowerCase(), name.toLowerCase());
+		for (MappingSource mkey : from.keySet()) {
+			String name = from.get(mkey);
+			double value = Distance.NGramSim2(toWordForm.toLowerCase(), name.toLowerCase());
 			FieldConnection fc = new FieldConnection();
 			fc.fromConnection = mkey.source;
 			fc.fromConnectionName = name;
 			fc.qualityOfConnection = value;
-			fc.toConnectionName = form;
-			fc.toConnection = key;
+			fc.toConnectionName = toWordForm;
+			fc.toConnection = (String) to.source;
 			proQue.add(fc);
 		}
 	}
