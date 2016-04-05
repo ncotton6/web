@@ -71,7 +71,7 @@ public class Operation {
 			MappingSource ms = new MappingSource();
 			ms.source = entry.getKey();
 			ms.type = entry.getValue();
-			ret.put(ms, entry.getValue());
+			ret.put(ms, entry.getKey());
 		}
 		return ret;
 	}

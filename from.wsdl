@@ -1,0 +1,48 @@
+<?xml version="1.0"?>
+<definitions name="StockQuote" targetNamespace="http://example.com/stockquote.wsdl"
+	xmlns:tns="http://example.com/stockquote.wsdl" xmlns:xsd1="http://example.com/stockquote.xsd"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+	<message name="getLoanRequest">
+		<part name="name" type="string" />
+		<part name="amount" type="double" />
+	</message>
+
+	<message name="getLoanResponse">
+		<part name="loanId" type="string" />
+		<part name="company" type="string"/>
+	</message>
+
+	<message name="payLoanRequest">
+		<part name="Loan_id" type="string" />
+<!-- 		<part name="quantity" type="double" /> -->
+	</message>
+
+	<message name="payLoanResponse">
+		<part name="stillDue" type="double" />
+	</message>
+
+	<portType name="StockQuotePortType">
+		<operation name="getLoan">
+			<input message="tns:getLoanRequest" />
+			<output message="tns:getLoanResponse" />
+		</operation>
+		<operation name="payLoan">
+			<input message="tns:payLoanRequest" />
+			<output message="tns:payLoanResponse" />
+		</operation>
+	</portType>
+
+	<binding name="StockQuoteSoapBinding" type="tns:StockQuotePortType">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+	</binding>
+
+	<service name="LoanGetter">
+		<documentation>My first service</documentation>
+		<port name="StockQuotePort" binding="tns:StockQuoteSoapBinding">
+			<soap:address location="http://example.com/stockquote" />
+		</port>
+	</service>
+
+</definitions>

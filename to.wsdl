@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<definitions name="StockQuote" targetNamespace="http://example.com/stockquote.wsdl"
+	xmlns:tns="http://example.com/stockquote.wsdl" xmlns:xsd1="http://example.com/stockquote.xsd"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+
+	<message name="getCompanyDetailsRequest">
+		<part name="organization" type="string" />
+	</message>
+
+	<message name="getCompanyDetailsResponse">
+		<part name="address" type="string" />
+		<part name="phoneNumber" type="string" />
+		<part name="stockSymbol" type="string" />
+	</message>
+
+	<portType name="StockQuotePortType">
+		<operation name="getCompanyDetails">
+			<input message="tns:getCompanyDetailsRequest"/>
+			<output message="tns:getCompanyDetailsResponse"/>
+		</operation>
+	</portType>
+
+	<binding name="StockQuoteSoapBinding" type="tns:StockQuotePortType">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+	</binding>
+
+	<service name="StockQuoteService">
+		<documentation>My first service</documentation>
+		<port name="StockQuotePort" binding="tns:StockQuoteSoapBinding">
+			<soap:address location="http://example.com/stockquote" />
+		</port>
+	</service>
+
+</definitions>
