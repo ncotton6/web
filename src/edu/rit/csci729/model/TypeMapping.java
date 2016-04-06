@@ -3,32 +3,39 @@ package edu.rit.csci729.model;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * For complex types, while not yet integrated into the project are stored
+ * within this singleton {@link TypeMapping} object.
+ * 
+ * @author Nathaniel Cotton
+ *
+ */
 public class TypeMapping {
 
-	private Map<String,Map<String,Map<String,String>>> typeMap = null;
+	private Map<String, Map<String, Map<String, String>>> typeMap = null;
 	private static TypeMapping mapping = null;
-	
-	private TypeMapping(){
-		this.typeMap = new HashMap<String,Map<String,Map<String,String>>>();
+
+	private TypeMapping() {
+		this.typeMap = new HashMap<String, Map<String, Map<String, String>>>();
 	}
-	
-	public static TypeMapping get(){
-		if(mapping == null){
+
+	public static TypeMapping get() {
+		if (mapping == null) {
 			synchronized (TypeMapping.class) {
-				if(mapping == null){
+				if (mapping == null) {
 					TypeMapping.mapping = new TypeMapping();
 				}
 			}
 		}
 		return TypeMapping.mapping;
 	}
-	
-	public void addService(String service, Map<String,Map<String,String>> details){
+
+	public void addService(String service, Map<String, Map<String, String>> details) {
 		typeMap.put(service, details);
 	}
-	
-	public Map<String,Map<String,String>> getService(String service){
+
+	public Map<String, Map<String, String>> getService(String service) {
 		return typeMap.get(service);
 	}
-	
+
 }

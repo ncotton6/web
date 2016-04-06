@@ -5,7 +5,16 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(value={ElementType.TYPE})
+/**
+ * NOT USED
+ * 
+ * But the intention was for it to mark classes that would be scanned at
+ * runtime.
+ * 
+ * @author Nathaniel Cotton
+ *
+ */
+@Target(value = { ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface WebServiceModel {
 

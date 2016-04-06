@@ -1,5 +1,11 @@
 package edu.rit.csci729.model;
 
+/**
+ * Simple modal class to hold the information for connectable endpoints.
+ * 
+ * @author Nathaniel Cotton
+ *
+ */
 public class MappingSource {
 
 	public Object source;

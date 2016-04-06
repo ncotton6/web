@@ -1,5 +1,13 @@
 package edu.rit.csci729.model;
 
+/**
+ * A useful modal object is the tuple.
+ * 
+ * @author Nathaniel Cotton
+ *
+ * @param <H>
+ * @param <T>
+ */
 public class Tuple<H, T> {
 
 	public H v1;

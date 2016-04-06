@@ -4,6 +4,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+/**
+ * Simple modal class to hold information pertaining to the inputs and outputs of an operation.
+ * 
+ * @author Nathaniel Cotton
+ *
+ */
 public class Operation {
 
 	private String operationName;

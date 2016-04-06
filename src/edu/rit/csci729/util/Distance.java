@@ -3,28 +3,33 @@ package edu.rit.csci729.util;
 import info.debatty.java.stringsimilarity.Levenshtein;
 import info.debatty.java.stringsimilarity.NGram;
 
+/**
+ * We played around with several distance/similarity metrics, but settled on
+ * Ren, et al, decision to use NGram.
+ * 
+ * @author Nathaniel Cotton
+ *
+ */
 public class Distance {
-	
-	
-	public static double NLevenshteinSim(String s1, String s2){
+
+	public static double NLevenshteinSim(String s1, String s2) {
 		Levenshtein l = new Levenshtein();
 		return l.similarity(s1, s2);
 	}
-	
-	public static double NGramSim2(String s1, String s2){
+
+	public static double NGramSim2(String s1, String s2) {
 		return Distance.NGramSim(s1, s2, 2);
 	}
-	
-	public static double NGramSim(String s1, String s2, int num){
+
+	public static double NGramSim(String s1, String s2, int num) {
 		NGram ng = new NGram(num);
 		return ng.similarity(s1, s2);
 	}
-	
-	
+
 	public static int LevenshteinDistance(String s1, String s2) {
 		return LevenshteinDistance(s1, s1.length(), s2, s2.length());
 	}
-	
+
 	private static int LevenshteinDistance(String s1, int lenS1, String s2, int lenS2) {
 		int cost = 0;
 		if (lenS1 == 0)

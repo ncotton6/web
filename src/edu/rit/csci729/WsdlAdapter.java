@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-
 import javax.wsdl.Definition;
 import javax.wsdl.Input;
 import javax.wsdl.Message;
@@ -15,7 +13,6 @@ import javax.wsdl.Service;
 import javax.wsdl.Types;
 import javax.wsdl.WSDLException;
 import javax.wsdl.extensions.schema.Schema;
-import javax.wsdl.extensions.soap.SOAPAddress;
 import javax.wsdl.factory.WSDLFactory;
 import javax.wsdl.xml.WSDLReader;
 
@@ -27,6 +24,13 @@ import com.ibm.wsdl.PortTypeImpl;
 import edu.rit.csci729.model.Operation;
 import edu.rit.csci729.model.TypeMapping;
 
+/**
+ * A utility class for reading a wsdl file and adding its contents to some of
+ * the internal objects.
+ * 
+ * @author Nathaniel Cotton
+ *
+ */
 public class WsdlAdapter {
 
 	public String service;
@@ -66,7 +70,7 @@ public class WsdlAdapter {
 		for (Object service : services.keySet()) {
 			Service s = (Service) services.get(service);
 			this.service = s.getQName().getLocalPart();
-			TypeMapping.get().addService(this.service, new HashMap<String,Map<String,String>>());
+			TypeMapping.get().addService(this.service, new HashMap<String, Map<String, String>>());
 		}
 
 		Map ports = wsdlDef.getPortTypes();
@@ -126,7 +130,7 @@ public class WsdlAdapter {
 			NodeList child = ele.getElementsByTagName("complexType");
 			if (child.getLength() > 0) {
 				// first element should be a complex type
-				Element c = (Element)child.item(0);
+				Element c = (Element) child.item(0);
 				NodeList realChildren = c.getElementsByTagName("element");
 				Map<String, String> t = new HashMap<String, String>();
 				for (int i = 0; i < realChildren.getLength(); ++i) {
