@@ -4,8 +4,16 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * {@link ClassMap} holds a collection of {@link ClassData} objects for quick
+ * retrieval at a moments notice.
+ * 
+ * @author Nathaniel Cotton
+ *
+ */
 public class ClassMap {
 
+	// private variables
 	private Map<Class<?>, ClassData> classData;
 	private static ClassMap classMap = null;
 
@@ -30,9 +38,14 @@ public class ClassMap {
 		}
 		return classMap;
 	}
-	
-	public void scanClasses(Collection<String> clazzes){
-		for(String clazz : clazzes){
+
+	/**
+	 * Scans a collection of classes into the system
+	 * 
+	 * @param clazzes
+	 */
+	public void scanClasses(Collection<String> clazzes) {
+		for (String clazz : clazzes) {
 			try {
 				Class<?> c = Class.forName(clazz);
 				scanClass(c);
@@ -41,16 +54,28 @@ public class ClassMap {
 			}
 		}
 	}
-	
-	public ClassData scanClass(Class<?> c){
-		if(!classData.containsKey(c)){
+
+	/**
+	 * Scans a single class and adds it to the system.
+	 * 
+	 * @param c
+	 * @return
+	 */
+	public ClassData scanClass(Class<?> c) {
+		if (!classData.containsKey(c)) {
 			ClassData cd = new ClassData(c);
 			classData.put(c, cd);
 		}
 		return classData.get(c);
 	}
-	
-	public ClassData getClassData(Class<?> c){
+
+	/**
+	 * Retrieves a class from the system.
+	 * 
+	 * @param c
+	 * @return
+	 */
+	public ClassData getClassData(Class<?> c) {
 		return classData.get(c);
 	}
 
