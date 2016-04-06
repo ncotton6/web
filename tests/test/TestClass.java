@@ -4,14 +4,12 @@ import edu.rit.csci729.annotations.WebServiceField;
 
 public class TestClass {
 
-	@WebServiceField()
+	@WebServiceField
 	private String firstName;
 	@WebServiceField
 	private String lastName;
 //	@WebServiceField
 //	private String name;
-	@WebServiceField
+	@WebServiceField(names={"yearsOld"})
 	private int age;
-	
-	
 }

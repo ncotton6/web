@@ -22,13 +22,13 @@ public class TestWsdlToWsdl {
 		String toService = wa.service;
 
 		System.out.println("Beginning Tests\n======================");
-		System.out.println("Searching for connections inside from wsdl");
+		System.out.println("Searching for connections inside from wsdl\n======================");
 		testConnections(fromOperations, fromOperations);
-		System.out.println("\n\nSearching for connections inside to wsdl");
+		System.out.println("\n\nSearching for connections inside to wsdl\n======================");
 		testConnections(toOperations, toOperations);
-		System.out.println("\n\nSearching for connections from from wsdl to to wsdl");
+		System.out.println("\n\nSearching for connections from from wsdl to to wsdl\n======================");
 		testConnections(fromOperations, toOperations);
-		System.out.println("\n\nSearching for connections from to wsdl to from wsdl");
+		System.out.println("\n\nSearching for connections from to wsdl to from wsdl\n======================");
 		testConnections(toOperations, fromOperations);
 		
 
