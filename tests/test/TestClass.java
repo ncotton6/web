@@ -8,8 +8,6 @@ public class TestClass {
 	private String firstName;
 	@WebServiceField
 	private String lastName;
-//	@WebServiceField
-//	private String name;
 	@WebServiceField(names={"yearsOld"})
 	private int age;
 }

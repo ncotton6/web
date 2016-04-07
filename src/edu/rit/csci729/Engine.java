@@ -23,7 +23,7 @@ import edu.smu.tspell.wordnet.WordNetDatabase;
 /**
  * The {@link Engine is where all the connections are formulated between
  * connection points, and the inputs for wsdl operation. Or it can be used to
- * formulate a connection between the outputs for one wsdl operation, and the
+ *T formulate a connection between the outputs for one wsdl operation, and the
  * inputs of another. Then in rare cases it could also be used for form a
  * connection between fields in classes.
  * 
