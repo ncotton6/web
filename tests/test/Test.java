@@ -6,11 +6,16 @@ import java.util.Map;
 
 import edu.rit.csci729.*;
 import edu.rit.csci729.model.*;
+import edu.rit.csci729.util.Distance;
 
 public class Test {
 
 	public static void main(String[] args) throws NoMappingFound {
-		// TODO Auto-generated method stub
+		
+		System.out.println(Distance.NGramSim2("zip_code", "zip code"));
+		System.out.println(Distance.NLevenshteinSim("zip_code", "zip code"));
+		
+		
 		System.out.println("Start");
 		ClassData cd = ClassMap.get().scanClass(TestClass.class);
 		Map<String, String> input = new HashMap<String, String>();

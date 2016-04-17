@@ -5,7 +5,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 /**
- * Simple modal class to hold information pertaining to the inputs and outputs of an operation.
+ * Simple modal class to hold information pertaining to the inputs and outputs
+ * of an operation.
  * 
  * @author Nathaniel Cotton
  *
@@ -62,22 +63,32 @@ public class Operation {
 	public void setServiceName(String serviceName) {
 		this.serviceName = serviceName;
 	}
-	
-	public Map<MappingSource,String> getInputMap(){
+
+	public Map<MappingSource, String> getInputMap() {
 		return generateMapping(input);
 	}
-	
-	public Map<MappingSource,String> getOutputMap(){
+
+	public Map<MappingSource, String> getOutputMap() {
 		return generateMapping(output);
 	}
-	
-	private Map<MappingSource,String> generateMapping(Map<String,String> map){
-		Map<MappingSource,String> ret = new HashMap<MappingSource,String>();
-		for(Entry<String,String> entry : map.entrySet()){
-			MappingSource ms = new MappingSource();
-			ms.source = entry.getKey();
-			ms.type = entry.getValue();
-			ret.put(ms, entry.getKey());
+
+	private Map<MappingSource, String> generateMapping(Map<String, String> map) {
+		Map<MappingSource, String> ret = new HashMap<MappingSource, String>();
+		for (Entry<String, String> entry : map.entrySet()) {
+			if (TypeMapping.get().getService(serviceName).containsKey(entry.getValue())) {
+				Map<MappingSource,String> temp = generateMapping(TypeMapping.get().getService(serviceName).get(entry.getValue()));
+				for(Entry<MappingSource, String> ent : temp.entrySet()){
+					MappingSource ms = new MappingSource();
+					ms.source = entry.getKey()+"."+ent.getKey().source;
+					ms.type = ent.getKey().type;
+					ret.put(ms,ent.getValue());
+				}
+			} else {
+				MappingSource ms = new MappingSource();
+				ms.source = entry.getKey();
+				ms.type = entry.getValue();
+				ret.put(ms, entry.getKey());
+			}
 		}
 		return ret;
 	}
