@@ -161,7 +161,7 @@ public class Engine {
 			String type = to.get(key);
 			if (toService == null
 					|| (toService != null && !TypeMapping.get().getService(toService).containsKey(type))) {
-				mappings.add(findIdealMapping(key, from));
+				mappings.add(findIdealMapping(key,(String)to.get(key), from));
 			}
 		}
 		if (check) {
@@ -185,10 +185,11 @@ public class Engine {
 	 * threshold check elsewhere will cover that.
 	 * 
 	 * @param to
+	 * @param value 
 	 * @param from
 	 * @return
 	 */
-	private FieldConnection findIdealMapping(MappingSource to, Map<MappingSource, String> from) {
+	private FieldConnection findIdealMapping(MappingSource to, String value, Map<MappingSource, String> from) {
 
 		WordNetDatabase database = WordNetDatabase.getFileInstance();
 		PriorityQueue<FieldConnection> proQue = new PriorityQueue<FieldConnection>(new Comparator<FieldConnection>() {
@@ -209,10 +210,10 @@ public class Engine {
 		findSense();
 
 		// test exact match
-		processForm(from, (String) to.source, to, proQue);
+		processForm(from, (String) value, to, proQue);
 
 		// test with wordnet
-		Synset[] synonyms = database.getSynsets((String) to.source);
+		Synset[] synonyms = database.getSynsets((String) value);
 		for (Synset s : synonyms) {
 			if (s instanceof NounSynset) {
 				NounSynset ns = (NounSynset) s;

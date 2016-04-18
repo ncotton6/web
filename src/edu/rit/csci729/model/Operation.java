@@ -75,19 +75,23 @@ public class Operation {
 	private Map<MappingSource, String> generateMapping(Map<String, String> map) {
 		Map<MappingSource, String> ret = new HashMap<MappingSource, String>();
 		for (Entry<String, String> entry : map.entrySet()) {
-			if (TypeMapping.get().getService(serviceName).containsKey(entry.getValue())) {
-				Map<MappingSource,String> temp = generateMapping(TypeMapping.get().getService(serviceName).get(entry.getValue()));
-				for(Entry<MappingSource, String> ent : temp.entrySet()){
+			if (TypeMapping.get().getService(serviceName) != null
+					&& TypeMapping.get().getService(serviceName).containsKey(entry.getValue())) {
+				Map<MappingSource, String> temp = generateMapping(
+						TypeMapping.get().getService(serviceName).get(entry.getValue()));
+				for (Entry<MappingSource, String> ent : temp.entrySet()) {
 					MappingSource ms = new MappingSource();
-					ms.source = entry.getKey()+"."+ent.getKey().source;
+					ms.source = entry.getKey() + "." + ent.getKey().source;
 					ms.type = ent.getKey().type;
-					ret.put(ms,ent.getValue());
+					ret.put(ms, ent.getValue());
 				}
 			} else {
 				MappingSource ms = new MappingSource();
 				ms.source = entry.getKey();
 				ms.type = entry.getValue();
 				ret.put(ms, entry.getKey());
+				ret.put(ms, entry.getKey().replaceAll("[-]", ""));
+				System.out.println(ret.get(ms));
 			}
 		}
 		return ret;
