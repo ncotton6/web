@@ -268,7 +268,7 @@ public class Engine {
 			else
 				typeValue = 0.1d; // something fairly low
 			// word and type
-			double combined = (w1*typeValue + w2*value)/(w1+w2);
+			double combined = (w1*value + w2*typeValue)/(w1+w2);
 			FieldConnection fc = new FieldConnection();
 			fc.fromConnection = mkey.source;
 			fc.fromConnectionName = name;
