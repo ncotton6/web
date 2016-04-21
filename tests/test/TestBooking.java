@@ -8,9 +8,10 @@ import java.util.List;
 import edu.rit.csci729.Engine;
 import edu.rit.csci729.model.*;
 
-public class TestTVShow {
+public class TestBooking {
+	
 
-	private static String TVService = "show";
+	private static String bookingService = "booking";
 	public  static void testCase(HashMap outputs,String testString,String type,String serviceName) throws NoMappingFound
 	{
 		Operation oper = new Operation();
@@ -43,36 +44,40 @@ public class TestTVShow {
 	public static void main(String[] args) throws NoMappingFound{
 		System.out.println("Start");
 		// Create hotel operations
-		HashMap<String,String> description = new HashMap<String,String>();
-		description.put("lead", "string");
-		description.put("summary", "string");
-
-		TypeMapping.get().addService(TVService, new HashMap<String,Map<String,String>>());
-		TypeMapping.get().getService(TVService).put("description", description);
+		HashMap<String,String> address = new HashMap<String,String>();
+		address.put("street", "string");
+		address.put("state", "string");
+		address.put("zipcode", "string");
+		HashMap<String,String> customer = new HashMap<String,String>();
+		address.put("name", "string");
+		address.put("age", "int");
+		address.put("address", "address");
+		TypeMapping.get().addService(bookingService, new HashMap<String,Map<String,String>>());
+		TypeMapping.get().getService(bookingService).put("address", address);
 		HashMap<String,String> outputs = new HashMap<String,String>();
-		outputs.put("title", "string");
-		outputs.put("description", "description");
-		outputs.put("airDate", "date");
+		outputs.put("customer", "customer");
+		outputs.put("quantity", "string");
+		outputs.put("date", "date");
 		/*
-		 * sYNONYM
+		 * synonym or very similar in meaning
+		 * 0.82
 		 */
-		 testCase(outputs, "actor", "string",TVService);
-		 /*
-		  * near similar
-		  */
-		 testCase(outputs, "comedy", "string", TVService);
-		 /*
-		  * arbitrary
-		  */
-		 testCase(outputs,"hedge fund","string",TVService);
-		 /*
-		  * arbitrary without type matching
-		  */
-		 testCase(outputs, "1234", "int", TVService);
-		 /*
-		  * limitation
-		  */
-	testCase(outputs, "metal", "string", TVService);
+		testCase(outputs, "volume", "int", bookingService);
+		/*
+		 * near similar
+		 * 0.8
+		 */
+		testCase(outputs,"quality","string",bookingService);
+		/*
+		 * arbitrary
+		 * 0.5
+		 */
+		testCase(outputs, "noodles", "string", bookingService);
+		/*
+		 * arbitrary not present
+		 * 0.1
+		 */
+testCase(outputs, "2.3", "double", bookingService);
 		
 		
 		

@@ -8,9 +8,9 @@ import java.util.List;
 import edu.rit.csci729.Engine;
 import edu.rit.csci729.model.*;
 
-public class TestTVShow {
+public class TestLibrary {
 
-	private static String TVService = "show";
+	private static String libraryService = "library";
 	public  static void testCase(HashMap outputs,String testString,String type,String serviceName) throws NoMappingFound
 	{
 		Operation oper = new Operation();
@@ -43,36 +43,48 @@ public class TestTVShow {
 	public static void main(String[] args) throws NoMappingFound{
 		System.out.println("Start");
 		// Create hotel operations
-		HashMap<String,String> description = new HashMap<String,String>();
-		description.put("lead", "string");
-		description.put("summary", "string");
-
-		TypeMapping.get().addService(TVService, new HashMap<String,Map<String,String>>());
-		TypeMapping.get().getService(TVService).put("description", description);
+		;
+		HashMap<String,String> book=new HashMap<String,String>();
+		book.put("Name","string");
+		book.put("title", "string");
+		book.put("summary", "string");
+		
+		
+		
+		TypeMapping.get().addService(libraryService, new HashMap<String,Map<String,String>>());
+		TypeMapping.get().getService(libraryService).put("book", book);
 		HashMap<String,String> outputs = new HashMap<String,String>();
-		outputs.put("title", "string");
-		outputs.put("description", "description");
-		outputs.put("airDate", "date");
+		outputs.put("librarian", "string");
+		outputs.put("books", "book");
+	
+		
+	/*
+	 * Synonym
+	 */
+		testCase(outputs, "label", "string", libraryService);
+		
 		/*
-		 * sYNONYM
+		 * Near similar
+		 * 0.64
+		 * 
 		 */
-		 testCase(outputs, "actor", "string",TVService);
-		 /*
-		  * near similar
-		  */
-		 testCase(outputs, "comedy", "string", TVService);
-		 /*
-		  * arbitrary
-		  */
-		 testCase(outputs,"hedge fund","string",TVService);
-		 /*
-		  * arbitrary without type matching
-		  */
-		 testCase(outputs, "1234", "int", TVService);
-		 /*
-		  * limitation
-		  */
-	testCase(outputs, "metal", "string", TVService);
+		testCase(outputs, "author", "string", libraryService);
+		
+		/*
+		 * arbitrary type present
+		 * 0.533
+		 */
+		testCase(outputs, "food", "string", libraryService);
+		
+		/*
+		 * arbitrary type not present
+		 * 0.02
+		 */
+		testCase(outputs, "899w0w0w", "int", libraryService);
+		
+		
+
+		
 		
 		
 		

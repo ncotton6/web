@@ -8,9 +8,9 @@ import java.util.List;
 import edu.rit.csci729.Engine;
 import edu.rit.csci729.model.*;
 
-public class TestTVShow {
+public class TestEmployee {
 
-	private static String TVService = "show";
+	private static String employeeService = "employee";
 	public  static void testCase(HashMap outputs,String testString,String type,String serviceName) throws NoMappingFound
 	{
 		Operation oper = new Operation();
@@ -43,36 +43,39 @@ public class TestTVShow {
 	public static void main(String[] args) throws NoMappingFound{
 		System.out.println("Start");
 		// Create hotel operations
-		HashMap<String,String> description = new HashMap<String,String>();
-		description.put("lead", "string");
-		description.put("summary", "string");
+		HashMap<String,String> address = new HashMap<String,String>();
 
-		TypeMapping.get().addService(TVService, new HashMap<String,Map<String,String>>());
-		TypeMapping.get().getService(TVService).put("description", description);
+		TypeMapping.get().addService(employeeService, new HashMap<String,Map<String,String>>());
+
 		HashMap<String,String> outputs = new HashMap<String,String>();
-		outputs.put("title", "string");
-		outputs.put("description", "description");
-		outputs.put("airDate", "date");
+		outputs.put("employeeName", "string");
+		outputs.put("employeeId", "double");
+		
+	/*
+	 * Synonym
+	 * 0.733
+	 */
+		testCase(outputs, "worker", "string", employeeService);
 		/*
-		 * sYNONYM
+		 * Near similar
+		 * but with a type not present
+		 * 0.23333
 		 */
-		 testCase(outputs, "actor", "string",TVService);
-		 /*
-		  * near similar
-		  */
-		 testCase(outputs, "comedy", "string", TVService);
-		 /*
-		  * arbitrary
-		  */
-		 testCase(outputs,"hedge fund","string",TVService);
-		 /*
-		  * arbitrary without type matching
-		  */
-		 testCase(outputs, "1234", "int", TVService);
-		 /*
-		  * limitation
-		  */
-	testCase(outputs, "metal", "string", TVService);
+		testCase(outputs, "salary", "int", employeeService);
+		
+		/*
+		 * arbitrary type present
+		 * 0.333
+		 */
+		testCase(outputs, "Broadway", "string", employeeService);
+		
+		/*
+		 * arbitrary type not present
+		 * 0.2
+		 */
+		testCase(outputs, "0.2", "double", employeeService);
+		
+	
 		
 		
 		
