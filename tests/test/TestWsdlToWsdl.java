@@ -44,7 +44,7 @@ public class TestWsdlToWsdl {
 				Operation fromOp = from.get(z);
 				Engine e = new Engine(fromOp.getServiceName(), toOp.getServiceName());
 				try {
-					List<FieldConnection> fcs = e.generateMapping(fromOp, toOp, 0.9, true);
+					List<FieldConnection> fcs = e.generateMapping(fromOp, toOp, 0.6, true);
 					System.out.println(String.format("Connection was found between operation %s <=> operation %s", fromOp.getOperationName(),
 							toOp.getOperationName()));
 					for (FieldConnection fc : fcs) {

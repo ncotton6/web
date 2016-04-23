@@ -91,7 +91,6 @@ public class Operation {
 				ms.type = entry.getValue();
 				ret.put(ms, entry.getKey());
 				ret.put(ms, entry.getKey().replaceAll("[-]", ""));
-				System.out.println(ret.get(ms));
 			}
 		}
 		return ret;
