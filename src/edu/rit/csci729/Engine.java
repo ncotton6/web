@@ -97,7 +97,7 @@ public class Engine {
 		ClassMap cMap = ClassMap.get();
 		cMap.scanClass(from);
 		ClassData cd = cMap.getClassData(from);
-		return generateMapping(cd.getMap(), to.getInputMap(), threshold, check);
+		return mapGeneratService(cd.getMap(), to.getInputMap(), threshold, check);
 	}
 
 	/**
@@ -116,7 +116,7 @@ public class Engine {
 	 */
 	public List<FieldConnection> generateMapping(ClassData from, Operation to, double threshold, boolean check)
 			throws NoMappingFound {
-		return generateMapping(from.getMap(), to.getInputMap(), threshold, check);
+		return mapGeneratService(from.getMap(), to.getInputMap(), threshold, check);
 	}
 
 	/**
@@ -136,7 +136,7 @@ public class Engine {
 	 */
 	public List<FieldConnection> generateMapping(Operation from, Operation to, double threshold, boolean check)
 			throws NoMappingFound {
-		return generateMapping(from.getOutputMap(), to.getInputMap(), threshold, check);
+		return mapGeneratService(from.getOutputMap(), to.getInputMap(), threshold, check);
 	}
 
 	/**
@@ -154,7 +154,7 @@ public class Engine {
 	 * @return
 	 * @throws NoMappingFound
 	 */
-	public List<FieldConnection> generateMapping(Map<MappingSource, String> from, Map<MappingSource, String> to,
+	public List<FieldConnection> mapGeneratService(Map<MappingSource, String> from, Map<MappingSource, String> to,
 			double threshold, boolean check) throws NoMappingFound {
 		ArrayList<FieldConnection> mappings = new ArrayList<FieldConnection>();
 		for (MappingSource key : to.keySet()) {
